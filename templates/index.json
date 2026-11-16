@@ -298,6 +298,8 @@
         "slide_JWJz48": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/Accesorios_premium_para_tu_estilo.png",
+            "image_mobile": "shopify://shop_images/Accesorios_premium_para_iPhone.png",
             "overlay_opacity": 0,
             "subheading": "",
             "heading": "",
