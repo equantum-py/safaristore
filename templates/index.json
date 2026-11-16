@@ -15,6 +15,8 @@
         "slide_jBJNLT": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/Tu_iPhone_tu_estilo__Cases_premium.png",
+            "image_mobile": "shopify://shop_images/Publicidad_premium_de_fundas_MagSafe.png",
             "overlay_opacity": 0,
             "subheading": "",
             "heading": "",
@@ -103,9 +105,9 @@
         "heading_size": "h2",
         "columns_desktop": 4,
         "mobile_layout": "scroll",
-        "layout": "vertical",
+        "layout": "horizontal",
         "icon_size": 36,
-        "item_heading_size": "h4",
+        "item_heading_size": "h3",
         "color_scheme": "",
         "show_line_separator": false,
         "padding_top": 16,
@@ -120,6 +122,7 @@
         "banner_KfVLpg": {
           "type": "banner",
           "settings": {
+            "image": "shopify://shop_images/iPhone_18_Pro_Max__Maxima_innovacion.png",
             "link": "",
             "heading": "",
             "text": "",
@@ -130,6 +133,7 @@
         "banner_M6PnpJ": {
           "type": "banner",
           "settings": {
+            "image": "shopify://shop_images/iPhone_18_Pro_en_lavanda.png",
             "link": "",
             "heading": "",
             "text": "",
@@ -140,6 +144,7 @@
         "banner_Uzg7TK": {
           "type": "banner",
           "settings": {
+            "image": "shopify://shop_images/iPhone_17_Pro_Max__Potencia_Premium.png",
             "link": "",
             "heading": "",
             "text": "",
@@ -155,10 +160,10 @@
       ],
       "name": "Safari · Banners promo",
       "settings": {
-        "title": "Encuentra tu modelo",
-        "heading_size": "h2",
+        "title": "<strong>Encuentra tu modelo</strong>",
+        "heading_size": "h1",
         "columns_desktop": "3",
-        "mobile_layout": "stack",
+        "mobile_layout": "scroll",
         "gap": 16,
         "full_width": false,
         "image_ratio": "adapt",
@@ -234,6 +239,7 @@
         "category_7BVgcQ",
         "category_DHPYb6"
       ],
+      "disabled": true,
       "name": "Safari · Categorías",
       "settings": {
         "title": "Categorías",
@@ -263,7 +269,77 @@
       "settings": {
         "collection": "all",
         "products_to_show": 8,
-        "title": "Featured products",
+        "title": "Lo mas vendidos",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 4,
+        "enable_desktop_slider": false,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 44,
+        "padding_bottom": 36
+      }
+    },
+    "safari_hero_slider_KieHfh": {
+      "type": "safari-hero-slider",
+      "blocks": {
+        "slide_JWJz48": {
+          "type": "slide",
+          "settings": {
+            "overlay_opacity": 0,
+            "subheading": "",
+            "heading": "",
+            "text": "",
+            "button_label": "",
+            "link": "",
+            "button_style_secondary": false,
+            "box_color_scheme": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_JWJz48"
+      ],
+      "name": "Safari · Slider",
+      "settings": {
+        "full_width": true,
+        "height_desktop": "adapt",
+        "height_mobile": "adapt",
+        "content_position": "middle-left",
+        "content_alignment": "left",
+        "heading_size": "h1",
+        "show_text_box": true,
+        "mobile_content_below": true,
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "show_arrows": true,
+        "show_dots": true,
+        "accessibility_info": "Promociones destacadas",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "show_on_desktop": true,
+        "show_on_mobile": true
+      }
+    },
+    "featured_collection_EcnB4r": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "all",
+        "products_to_show": 8,
+        "title": "Lo mas vendidos",
         "heading_size": "h2",
         "description": "",
         "show_description": false,
@@ -292,6 +368,8 @@
     "safari_benefits_hy3DVT",
     "safari_promo_banners_MAyDkQ",
     "safari_category_grid_jc86WR",
-    "featured_collection"
+    "featured_collection",
+    "safari_hero_slider_KieHfh",
+    "featured_collection_EcnB4r"
   ]
 }
