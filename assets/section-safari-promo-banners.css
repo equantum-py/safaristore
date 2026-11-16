@@ -1,0 +1,115 @@
+/* Safari Store — Banners promocionales. Estilos provisionales (OT-002, base funcional). */
+.safari-promo__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--safari-gap);
+  margin: 0;
+  padding: 0;
+}
+
+.safari-promo__item {
+  min-width: 0;
+}
+
+.safari-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: var(--safari-border) solid rgba(var(--color-foreground), 0.12);
+  border-radius: var(--safari-radius);
+  text-decoration: none;
+}
+
+.safari-banner__media {
+  position: relative;
+  width: 100%;
+}
+
+.safari-banner__media--adapt {
+  aspect-ratio: var(--safari-banner-ratio-mobile, 16 / 9);
+}
+
+.safari-banner__media--landscape {
+  aspect-ratio: 16 / 9;
+}
+
+.safari-banner__media--wide {
+  aspect-ratio: 21 / 9;
+}
+
+.safari-banner__media--square {
+  aspect-ratio: 1;
+}
+
+.safari-banner__media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.safari-banner__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.safari-banner__content {
+  padding: 1.2rem 1.6rem 1.6rem;
+}
+
+.safari-banner__content > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.safari-banner__content > * + * {
+  margin-top: 0.8rem;
+}
+
+.safari-banner__content--center {
+  text-align: center;
+}
+
+.safari-banner__text p {
+  margin: 0;
+}
+
+.safari-banner--overlay .safari-banner__media + .safari-banner__content {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(var(--color-background), 0.88);
+}
+
+@media screen and (max-width: 749px) {
+  .safari-promo__list--mobile-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .safari-promo__list--mobile-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .safari-promo__list--mobile-scroll .safari-promo__item {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .safari-promo__list {
+    grid-template-columns: repeat(var(--safari-cols-desktop), minmax(0, 1fr));
+  }
+
+  .safari-banner__media--adapt {
+    aspect-ratio: var(--safari-banner-ratio-desktop, 16 / 9);
+  }
+}

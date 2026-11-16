@@ -1,0 +1,109 @@
+/* Safari Store — Categorías destacadas. Estilos provisionales (OT-002, base funcional). */
+.safari-category-grid__list {
+  display: grid;
+  grid-template-columns: repeat(var(--safari-cols-mobile), minmax(0, 1fr));
+  gap: 1.6rem 1.2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.safari-category-grid__item {
+  min-width: 0;
+}
+
+.safari-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  height: 100%;
+  text-decoration: none;
+}
+
+.safari-category--center {
+  align-items: center;
+  text-align: center;
+}
+
+.safari-category__media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+.safari-category__media--square {
+  aspect-ratio: 1;
+}
+
+.safari-category__media--portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.safari-category__media--landscape {
+  aspect-ratio: 4 / 3;
+}
+
+.safari-category__media--round {
+  border-radius: 50%;
+}
+
+.safari-category__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.safari-category__info {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.safari-category__title {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.safari-category__count {
+  margin: 0.2rem 0 0;
+}
+
+.safari-category-grid__footer {
+  margin-top: 2.4rem;
+}
+
+@media screen and (max-width: 749px) {
+  .safari-category-grid__list--mobile-scroll {
+    display: flex;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scroll-padding-inline: 1.5rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .safari-category-grid__list--mobile-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .safari-category-grid__list--mobile-scroll .safari-category-grid__item {
+    flex: 0 0 calc((100% - 1.2rem * var(--safari-cols-mobile)) / (var(--safari-cols-mobile) + 0.4));
+    scroll-snap-align: start;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .safari-category-grid__list {
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 2.4rem 1.6rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .safari-category-grid__list {
+    grid-template-columns: repeat(var(--safari-cols-desktop), minmax(0, 1fr));
+  }
+}

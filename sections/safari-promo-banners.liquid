@@ -1,0 +1,443 @@
+{{ 'section-safari-promo-banners.css' | asset_url | stylesheet_tag }}
+
+{%- render 'safari-section-style',
+  section_id: section.id,
+  padding_top: section.settings.padding_top,
+  padding_bottom: section.settings.padding_bottom,
+  show_on_desktop: section.settings.show_on_desktop,
+  show_on_mobile: section.settings.show_on_mobile
+-%}
+
+{%- liquid
+  assign visible_count = 0
+  for block in section.blocks
+    if block.settings.image != blank or block.settings.heading != blank or block.settings.text != blank or request.design_mode
+      assign visible_count = visible_count | plus: 1
+    endif
+  endfor
+  assign mobile_width_list = '375,550,750,1100' | split: ','
+-%}
+
+{%- if visible_count > 0 -%}
+  <div class="safari-promo color-{{ section.settings.color_scheme }} gradient">
+    <div class="section-{{ section.id }}-padding{% unless section.settings.full_width %} page-width{% endunless %}">
+      {%- if section.settings.title != blank -%}
+        <div class="title-wrapper title-wrapper--no-top-margin{% if section.settings.full_width %} page-width{% endif %}">
+          <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
+        </div>
+      {%- endif -%}
+
+      <ul
+        class="safari-promo__list safari-promo__list--mobile-{{ section.settings.mobile_layout }} list-unstyled"
+        role="list"
+        style="--safari-cols-desktop: {{ section.settings.columns_desktop }}; --safari-gap: {{ section.settings.gap }}px; --safari-radius: {{ section.settings.corner_radius }}px; --safari-border: {{ section.settings.border_width }}px;"
+      >
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign image = block.settings.image
+            assign image_mobile = block.settings.image_mobile | default: block.settings.image
+            assign has_text = false
+            if block.settings.heading != blank or block.settings.text != blank or block.settings.button_label != blank
+              assign has_text = true
+            endif
+            assign is_real = false
+            if image != blank or has_text
+              assign is_real = true
+            endif
+          -%}
+          {%- if is_real or request.design_mode -%}
+            <li class="safari-promo__item" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="safari-banner safari-banner--{{ section.settings.text_layout }} link link--text focus-inset">
+              {%- else -%}
+                <div class="safari-banner safari-banner--{{ section.settings.text_layout }}">
+              {%- endif -%}
+
+              {%- if image != blank or request.design_mode -%}
+                <div
+                  class="safari-banner__media safari-banner__media--{{ section.settings.image_ratio }}{% if image == blank %} placeholder{% endif %}"
+                  {% if image != blank %}
+                    style="--safari-banner-ratio-desktop: {{ image.aspect_ratio }}; --safari-banner-ratio-mobile: {{ image_mobile.aspect_ratio }};"
+                  {% endif %}
+                >
+                  {%- if image != blank -%}
+                    {%- capture sizes -%}
+                      (min-width: 990px) calc({{ settings.page_width }}px / {{ section.settings.columns_desktop }}), (min-width: 750px) calc(100vw / {{ section.settings.columns_desktop }}), 100vw
+                    {%- endcapture -%}
+                    <picture>
+                      {%- if block.settings.image_mobile != blank -%}
+                        <source
+                          media="(max-width: 749px)"
+                          srcset="
+                            {%- for w in mobile_width_list -%}
+                              {%- assign w_int = w | plus: 0 -%}
+                              {%- if image_mobile.width >= w_int -%}
+                                {{ image_mobile | image_url: width: w_int }} {{ w_int }}w,
+                              {%- endif -%}
+                            {%- endfor -%}
+                            {{ image_mobile | image_url }} {{ image_mobile.width }}w"
+                          sizes="100vw"
+                          width="{{ image_mobile.width }}"
+                          height="{{ image_mobile.height }}"
+                        >
+                      {%- endif -%}
+                      {{
+                        image
+                        | image_url: width: 2000
+                        | image_tag:
+                          class: 'safari-banner__image',
+                          widths: '375, 550, 750, 1100, 1500, 2000',
+                          sizes: sizes,
+                          loading: 'lazy',
+                          alt: image.alt
+                      }}
+                    </picture>
+                  {%- else -%}
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg safari-banner__image' }}
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if has_text -%}
+                <div class="safari-banner__content safari-banner__content--{{ section.settings.text_alignment }}">
+                  {%- if block.settings.heading != blank -%}
+                    <h3 class="safari-banner__heading inline-richtext {{ section.settings.item_heading_size }}">
+                      {{ block.settings.heading }}
+                    </h3>
+                  {%- endif -%}
+                  {%- if block.settings.text != blank -%}
+                    <div class="safari-banner__text rte">{{ block.settings.text }}</div>
+                  {%- endif -%}
+                  {%- if block.settings.button_label != blank -%}
+                    <span class="safari-banner__button button button--secondary">
+                      {{- block.settings.button_label | escape -}}
+                    </span>
+                  {%- endif -%}
+                </div>
+              {%- elsif block.settings.link != blank and image.alt == blank -%}
+                <span class="visually-hidden">{{ block.settings.accessibility_label | default: shop.name | escape }}</span>
+              {%- endif -%}
+
+              {%- if block.settings.link != blank -%}
+                </a>
+              {%- else -%}
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Safari · Banners promo",
+  "tag": "section",
+  "class": "section safari-promo-section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Título"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Tamaño del título",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Pequeño"
+        },
+        {
+          "value": "h1",
+          "label": "Mediano"
+        },
+        {
+          "value": "h0",
+          "label": "Grande"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "header",
+      "content": "Distribución"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Banners por fila en escritorio",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Disposición en móvil",
+      "options": [
+        {
+          "value": "stack",
+          "label": "Uno debajo del otro"
+        },
+        {
+          "value": "scroll",
+          "label": "Fila desplazable"
+        }
+      ],
+      "default": "stack"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "label": "Separación entre banners",
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Ancho completo",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Imagen"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporción de la imagen",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Original (sin recorte)"
+        },
+        {
+          "value": "landscape",
+          "label": "Horizontal 16:9"
+        },
+        {
+          "value": "wide",
+          "label": "Panorámica 21:9"
+        },
+        {
+          "value": "square",
+          "label": "Cuadrada"
+        }
+      ],
+      "default": "adapt",
+      "info": "Con una proporción fija la imagen se recorta para llenar el espacio."
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "label": "Redondeo de las esquinas",
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "label": "Grosor del borde",
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Texto"
+    },
+    {
+      "type": "select",
+      "id": "text_layout",
+      "label": "Ubicación del texto",
+      "options": [
+        {
+          "value": "below",
+          "label": "Debajo de la imagen"
+        },
+        {
+          "value": "overlay",
+          "label": "Sobre la imagen"
+        }
+      ],
+      "default": "below"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alineación del texto",
+      "options": [
+        {
+          "value": "left",
+          "label": "Izquierda"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "item_heading_size",
+      "label": "Tamaño del título del banner",
+      "options": [
+        {
+          "value": "h5",
+          "label": "Pequeño"
+        },
+        {
+          "value": "h4",
+          "label": "Mediano"
+        },
+        {
+          "value": "h3",
+          "label": "Grande"
+        }
+      ],
+      "default": "h4"
+    },
+    {
+      "type": "header",
+      "content": "Apariencia"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Esquema de color",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "label": "Espacio superior",
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "label": "Espacio inferior",
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Visibilidad"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Mostrar en escritorio y tablet",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Mostrar en móvil",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagen de escritorio"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Imagen de móvil",
+          "info": "Opcional. Si queda vacía se usa la de escritorio."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Título"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Texto"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Texto del botón"
+        },
+        {
+          "type": "text",
+          "id": "accessibility_label",
+          "label": "Descripción del enlace",
+          "info": "Para lectores de pantalla, cuando el banner es solo una imagen sin texto alternativo."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Safari · Banners promo",
+      "blocks": [
+        {
+          "type": "banner"
+        },
+        {
+          "type": "banner"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,111 @@
+/* Safari Store — Beneficios comerciales. Estilos provisionales (OT-002, base funcional). */
+.safari-benefits--border {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.safari-benefits__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 1.6rem;
+  margin: 0;
+  padding: 0;
+}
+
+.safari-benefits__list--mobile-stack {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.safari-benefits__item {
+  min-width: 0;
+}
+
+.safari-benefit {
+  display: flex;
+  gap: 1.2rem;
+  height: 100%;
+  text-decoration: none;
+}
+
+.safari-benefit--horizontal {
+  align-items: flex-start;
+}
+
+.safari-benefit--vertical {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.safari-benefit__icon {
+  display: flex;
+  flex: 0 0 var(--safari-icon-size);
+  width: var(--safari-icon-size);
+  height: var(--safari-icon-size);
+}
+
+.safari-benefit__icon .svg-wrapper,
+.safari-benefit__icon svg,
+.safari-benefit__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.safari-benefit__image {
+  object-fit: contain;
+}
+
+.safari-benefit__body {
+  min-width: 0;
+}
+
+.safari-benefit__heading {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.safari-benefit__text {
+  margin-top: 0.4rem;
+}
+
+.safari-benefit__text p {
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .safari-benefits__list--mobile-scroll {
+    display: flex;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scroll-padding-inline: 1.5rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .safari-benefits__list--mobile-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .safari-benefits__list--mobile-scroll .safari-benefits__item {
+    flex: 0 0 70%;
+    scroll-snap-align: start;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .safari-benefits__list,
+  .safari-benefits__list--mobile-stack {
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 2.4rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .safari-benefits__list,
+  .safari-benefits__list--mobile-stack {
+    grid-template-columns: repeat(var(--safari-cols-desktop), minmax(0, 1fr));
+  }
+}

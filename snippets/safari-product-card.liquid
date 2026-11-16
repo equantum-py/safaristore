@@ -1,0 +1,95 @@
+{% doc %}
+  Safari Store — tarjeta de producto.
+  Envuelve la tarjeta nativa de Dawn (`card-product`), que aporta imagen, segunda imagen,
+  nombre, precio, precio anterior, distintivos de oferta y agotado, y el agregado rápido al
+  carrito con selector de variantes. Esta capa suma el porcentaje de descuento calculado,
+  las etiquetas comerciales por tag y la línea de disponibilidad.
+
+  @param {product} product - Producto del catálogo.
+  @param {string} section_id - ID de la sección, para los IDs del agregado rápido.
+  @param {string} [image_ratio] - `adapt`, `portrait` o `square`.
+  @param {boolean} [show_secondary_image] - Segunda imagen al pasar el cursor.
+  @param {boolean} [show_vendor] - Mostrar marca.
+  @param {boolean} [show_rating] - Mostrar valoración.
+  @param {string} [quick_add] - `none` o `standard`.
+  @param {boolean} [lazy_load] - Carga diferida de la imagen.
+  @param {boolean} [skip_styles] - Omitir los CSS del componente (ya cargados por una tarjeta anterior).
+  @param {object[]} [labels] - Bloques de la sección; se usan los de tipo `label`.
+  @param {boolean} [show_discount] - Mostrar porcentaje de descuento.
+  @param {boolean} [show_availability] - Mostrar línea de disponibilidad.
+  @param {string} [text_in_stock] - Texto con stock.
+  @param {string} [text_out_of_stock] - Texto sin stock.
+  @param {number} [low_stock_threshold] - Umbral de pocas unidades; 0 lo desactiva.
+  @param {string} [text_low_stock] - Texto de pocas unidades.
+  @param {string} [product_view_context] - Contexto de analítica de Dawn.
+
+  @example
+  {% render 'safari-product-card', product: product, section_id: section.id, quick_add: 'standard', labels: section.blocks %}
+{% enddoc %}
+
+{%- liquid
+  assign discount = 0
+  if show_discount and product.compare_at_price > product.price
+    assign discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  endif
+
+  assign tag_index = product.tags | join: '||' | downcase | prepend: '||' | append: '||'
+
+  assign stock_state = 'in'
+  assign stock_text = text_in_stock
+  if product.available == false
+    assign stock_state = 'out'
+    assign stock_text = text_out_of_stock
+  elsif low_stock_threshold > 0
+    assign variant = product.selected_or_first_available_variant
+    if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny' and variant.inventory_quantity > 0 and variant.inventory_quantity <= low_stock_threshold
+      assign stock_state = 'low'
+      assign stock_text = text_low_stock
+    endif
+  endif
+-%}
+
+{%- capture flags -%}
+  {%- if discount > 0 -%}
+    <span class="safari-card__flag safari-card__flag--discount badge color-{{ settings.sale_badge_color_scheme }}">
+      -{{ discount }}%
+    </span>
+  {%- endif -%}
+  {%- for label in labels -%}
+    {%- if label.type == 'label' and label.settings.tag != blank and label.settings.text != blank -%}
+      {%- assign needle = label.settings.tag | strip | downcase | prepend: '||' | append: '||' -%}
+      {%- if tag_index contains needle -%}
+        <span class="safari-card__flag badge color-{{ label.settings.color_scheme }}" {{ label.shopify_attributes }}>
+          {{- label.settings.text | escape -}}
+        </span>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign flags = flags | strip -%}
+
+<div class="safari-card">
+  {%- if flags != blank -%}
+    <div class="safari-card__flags">{{ flags }}</div>
+  {%- endif -%}
+
+  {% render 'card-product',
+    card_product: product,
+    media_aspect_ratio: image_ratio,
+    lazy_load: lazy_load,
+    show_secondary_image: show_secondary_image,
+    show_vendor: show_vendor,
+    show_rating: show_rating,
+    skip_styles: skip_styles,
+    section_id: section_id,
+    quick_add: quick_add,
+    product_view_context: product_view_context
+  %}
+
+  {%- if show_availability and stock_text != blank -%}
+    <p class="safari-card__stock safari-card__stock--{{ stock_state }} caption">
+      <span class="safari-card__stock-dot" aria-hidden="true"></span>
+      {{- stock_text | escape -}}
+    </p>
+  {%- endif -%}
+</div>

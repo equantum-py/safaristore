@@ -1,0 +1,43 @@
+{% doc %}
+  Safari Store — estilos comunes por sección: espaciado vertical y visibilidad por dispositivo.
+  Genera la clase `section-<id>-padding`, igual que las secciones de Dawn.
+
+  @param {string} section_id - ID de la sección.
+  @param {number} [padding_top] - Espacio superior en px (escritorio). En móvil se aplica el 75 %.
+  @param {number} [padding_bottom] - Espacio inferior en px (escritorio). En móvil se aplica el 75 %.
+  @param {boolean} [show_on_desktop] - Si es `false`, oculta la sección desde 750px.
+  @param {boolean} [show_on_mobile] - Si es `false`, oculta la sección hasta 749px.
+
+  @example
+  {% render 'safari-section-style', section_id: section.id, padding_top: section.settings.padding_top, padding_bottom: section.settings.padding_bottom %}
+{% enddoc %}
+
+{%- style -%}
+  .section-{{ section_id }}-padding {
+    padding-top: {{ padding_top | default: 0 | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ padding_bottom | default: 0 | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section_id }}-padding {
+      padding-top: {{ padding_top | default: 0 }}px;
+      padding-bottom: {{ padding_bottom | default: 0 }}px;
+    }
+  }
+
+  {%- if show_on_mobile == false %}
+    @media screen and (max-width: 749px) {
+      #shopify-section-{{ section_id }} {
+        display: none;
+      }
+    }
+  {%- endif %}
+
+  {%- if show_on_desktop == false %}
+    @media screen and (min-width: 750px) {
+      #shopify-section-{{ section_id }} {
+        display: none;
+      }
+    }
+  {%- endif %}
+{%- endstyle -%}

@@ -1,0 +1,138 @@
+{% doc %}
+  Safari Store — grilla de productos con carrusel opcional en móvil.
+  Reutiliza la grilla, el `slider-component` y la tarjeta de Dawn. La usan las secciones
+  `safari-featured-products` y `safari-collection-products`.
+
+  Sin productos no genera tarjetas en la tienda; en el editor muestra tarjetas de ejemplo.
+
+  @param {product[]} [products] - Productos a mostrar.
+  @param {number} [limit] - Máximo de productos. Por defecto 50.
+  @param {string} section_id - ID de la sección.
+  @param {number} columns_desktop - Columnas en escritorio.
+  @param {string} columns_mobile - Columnas en móvil (`1` o `2`).
+  @param {boolean} [swipe_on_mobile] - Carrusel en móvil y tablet.
+  @param {string} [image_ratio] - `adapt`, `portrait` o `square`.
+  @param {boolean} [show_secondary_image] - Segunda imagen al pasar el cursor.
+  @param {boolean} [show_vendor] - Mostrar marca.
+  @param {boolean} [show_rating] - Mostrar valoración.
+  @param {string} [quick_add] - `none` o `standard`.
+  @param {object[]} [labels] - Bloques de la sección con etiquetas comerciales.
+  @param {boolean} [show_discount] - Mostrar porcentaje de descuento.
+  @param {boolean} [show_availability] - Mostrar disponibilidad.
+  @param {string} [text_in_stock] - Texto con stock.
+  @param {string} [text_out_of_stock] - Texto sin stock.
+  @param {number} [low_stock_threshold] - Umbral de pocas unidades.
+  @param {string} [text_low_stock] - Texto de pocas unidades.
+  @param {string} [product_view_context] - Contexto de analítica de Dawn.
+
+  @example
+  {% render 'safari-product-grid', products: collection.products, limit: 8, section_id: section.id, columns_desktop: 4, columns_mobile: '2' %}
+{% enddoc %}
+
+{%- liquid
+  assign columns_mobile_int = columns_mobile | plus: 0
+  assign columns_desktop_int = columns_desktop | plus: 0
+  assign product_limit = limit | default: 50
+  assign product_count = products.size | default: 0
+  if product_count > product_limit
+    assign product_count = product_limit
+  endif
+
+  assign placeholder_mode = false
+  if product_count == 0 and request.design_mode
+    assign placeholder_mode = true
+    assign product_count = columns_desktop_int
+  endif
+
+  assign show_mobile_slider = false
+  if swipe_on_mobile and product_count > columns_mobile_int
+    assign show_mobile_slider = true
+  endif
+
+  assign max_columns = columns_mobile_int
+  if columns_desktop_int > columns_mobile_int
+    assign max_columns = columns_desktop_int
+  endif
+-%}
+
+{%- if product_count > 0 -%}
+  <slider-component class="slider-mobile-gutter page-width-desktop{% unless show_mobile_slider %} page-width{% endunless %}">
+    <ul
+      id="Slider-{{ section_id }}"
+      data-id="{{ section_id }}"
+      class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--{{ columns_desktop }}-col-desktop grid--{{ columns_mobile }}-col-tablet-down{% if show_mobile_slider %} slider slider--tablet grid--peek{% endif %}"
+      role="list"
+      aria-label="{{ 'general.slider.name' | t }}"
+    >
+      {%- assign skip_styles = false -%}
+      {%- if placeholder_mode -%}
+        {%- for i in (1..product_count) -%}
+          <li id="Slide-{{ section_id }}-{{ forloop.index }}" class="grid__item{% if show_mobile_slider %} slider__slide{% endif %}">
+            {% render 'card-product', media_aspect_ratio: image_ratio, show_vendor: show_vendor, lazy_load: false, skip_styles: skip_styles %}
+          </li>
+          {%- assign skip_styles = true -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for product in products limit: product_limit -%}
+          {%- liquid
+            assign lazy_load = false
+            if forloop.index > max_columns
+              assign lazy_load = true
+            endif
+          -%}
+          <li id="Slide-{{ section_id }}-{{ forloop.index }}" class="grid__item{% if show_mobile_slider %} slider__slide{% endif %}">
+            {% render 'safari-product-card',
+              product: product,
+              section_id: section_id,
+              image_ratio: image_ratio,
+              show_secondary_image: show_secondary_image,
+              show_vendor: show_vendor,
+              show_rating: show_rating,
+              quick_add: quick_add,
+              lazy_load: lazy_load,
+              skip_styles: skip_styles,
+              labels: labels,
+              show_discount: show_discount,
+              show_availability: show_availability,
+              text_in_stock: text_in_stock,
+              text_out_of_stock: text_out_of_stock,
+              low_stock_threshold: low_stock_threshold,
+              text_low_stock: text_low_stock,
+              product_view_context: product_view_context
+            %}
+          </li>
+          {%- assign skip_styles = true -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+
+    {%- if show_mobile_slider -%}
+      <div class="slider-buttons">
+        <button
+          type="button"
+          class="slider-button slider-button--prev"
+          name="previous"
+          aria-label="{{ 'general.slider.previous_slide' | t }}"
+          aria-controls="Slider-{{ section_id }}"
+        >
+          <span class="svg-wrapper">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+        </button>
+        <div class="slider-counter caption">
+          <span class="slider-counter--current">1</span>
+          <span aria-hidden="true"> / </span>
+          <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+          <span class="slider-counter--total">{{ product_count }}</span>
+        </div>
+        <button
+          type="button"
+          class="slider-button slider-button--next"
+          name="next"
+          aria-label="{{ 'general.slider.next_slide' | t }}"
+          aria-controls="Slider-{{ section_id }}"
+        >
+          <span class="svg-wrapper">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+        </button>
+      </div>
+    {%- endif -%}
+  </slider-component>
+{%- endif -%}

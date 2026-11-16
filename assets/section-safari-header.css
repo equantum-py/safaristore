@@ -1,0 +1,166 @@
+/* Safari Store — Encabezado. Estilos provisionales (OT-002, base funcional). */
+/* Reglas base de menú. Dawn las declara en línea dentro de su sección `header`,
+   así que no existen cuando esa sección no está en la página. Se repiten idénticas. */
+.list-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-menu--inline {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+summary.list-menu__item {
+  padding-right: 2.7rem;
+}
+
+.list-menu__item {
+  display: flex;
+  align-items: center;
+  line-height: calc(1 + 0.3 / var(--font-body-scale));
+}
+
+.list-menu__item--link {
+  text-decoration: none;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  line-height: calc(1 + 0.8 / var(--font-body-scale));
+}
+
+@media screen and (min-width: 750px) {
+  .list-menu__item--link {
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+}
+
+.menu-drawer-container {
+  display: flex;
+}
+
+shopify-account.header__icon {
+  --shopify-account-font-heading: var(--font-heading-family);
+  --shopify-account-font-heading-weight: var(--font-heading-weight);
+  --shopify-account-font-body: var(--font-body-family);
+  --shopify-account-font-body-weight: var(--font-body-weight);
+  --shopify-account-radius-base: var(--popup-corner-radius);
+  --shopify-account-radius-button: var(--buttons-radius);
+  --shopify-account-radius-button-small: var(--buttons-radius);
+  --shopify-account-radius-input: var(--inputs-radius);
+  --shopify-account-color-background: rgb(var(--color-background));
+  --shopify-account-color-text: rgb(var(--color-foreground));
+  --shopify-account-color-accent: rgb(var(--color-button));
+  --shopify-account-color-accent-text: rgb(var(--color-button-text));
+  --shopify-account-dialog-position-top: var(--account-dialog-top, var(--header-height, 0px));
+}
+
+shopify-account.header__icon:not(:defined) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.4rem;
+  height: 4.4rem;
+}
+
+/* Diseño propio del encabezado Safari ------------------------------------- */
+.safari-header__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'drawer brand icons'
+    'search search search';
+  align-items: center;
+  column-gap: 0.8rem;
+  row-gap: 0.8rem;
+}
+
+.safari-header__drawer {
+  grid-area: drawer;
+}
+
+.safari-header__drawer header-drawer {
+  display: block;
+  margin-left: -1.2rem;
+}
+
+.safari-header__brand {
+  grid-area: brand;
+  min-width: 0;
+}
+
+.safari-header__brand .header__heading {
+  margin: 0;
+  line-height: 0;
+}
+
+.safari-header__brand .header__heading-link {
+  display: inline-block;
+  padding: 0.75rem;
+  margin-left: -0.75rem;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.safari-header__logo-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.safari-header__menu {
+  grid-area: menu;
+  display: none;
+}
+
+.safari-header__search {
+  grid-area: search;
+  min-width: 0;
+}
+
+.safari-header__search-form {
+  display: block;
+  position: relative;
+}
+
+.safari-header__icons {
+  grid-area: icons;
+  display: flex;
+  align-items: center;
+  justify-self: end;
+}
+
+/* El ícono mide 4.4rem para el toque; se compensa su espacio interno contra el borde. */
+.safari-header__icons > :last-child {
+  margin-right: -1.2rem;
+}
+
+@media screen and (min-width: 990px) {
+  .safari-header__inner {
+    grid-template-columns: auto auto minmax(20rem, 1fr) auto;
+    grid-template-areas: 'brand menu search icons';
+    column-gap: 2.4rem;
+  }
+
+  .safari-header__drawer {
+    display: none;
+  }
+
+  .safari-header__menu {
+    display: block;
+  }
+
+  .safari-header__search {
+    justify-self: center;
+    width: 100%;
+    max-width: 64rem;
+  }
+}
+
+/* El panel de sugerencias se estiliza con component-predictive-search.css, que el tema
+   carga de forma diferida. Se oculta desde ya para que no aparezca sin estilos. */
+.safari-header__search .predictive-search {
+  display: none;
+  position: absolute;
+}

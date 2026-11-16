@@ -25,27 +25,36 @@ Dawn ni la compatibilidad con el editor visual de Shopify.
 | Estilos globales | `assets/safari-theme.css` | (ya existe) |
 | Carga global | `snippets/safari-head.liquid` | (ya existe) |
 
-## 3. Secciones previstas (OT-002)
+## 3. Secciones Safari
+
+Las nueve secciones existen desde la OT-002 con su base funcional y estilos provisionales. La guía de
+uso, los ajustes de cada una y los pasos para integrarlas están en [`SECCIONES-SAFARI.md`](SECCIONES-SAFARI.md).
 
 | Componente | Archivo | Dónde se usa |
 |---|---|---|
 | Barra de anuncios | `sections/safari-announcement-bar.liquid` | Grupo de encabezado |
-| Header personalizado | `sections/safari-header.liquid` | Grupo de encabezado |
+| Header | `sections/safari-header.liquid` | Grupo de encabezado |
 | Menú de categorías | `sections/safari-category-menu.liquid` | Grupo de encabezado |
 | Slider principal | `sections/safari-hero-slider.liquid` | Plantillas |
 | Categorías destacadas | `sections/safari-category-grid.liquid` | Plantillas |
 | Productos destacados | `sections/safari-featured-products.liquid` | Plantillas |
 | Banners promocionales | `sections/safari-promo-banners.liquid` | Plantillas |
 | Productos por colección | `sections/safari-collection-products.liquid` | Plantillas |
-| Beneficios comerciales | `sections/safari-benefits.liquid` | Plantillas |
+| Beneficios comerciales | `sections/safari-benefits.liquid` | Plantillas, encabezado o pie |
 
-**Estos archivos todavía no existen, a propósito.** Una sección vacía aparece igual en el editor de
-Shopify como opción agregable y un `schema` incompleto provoca errores de sincronización. Cada archivo se
-crea en la OT-002 cuando tenga contenido funcional.
+Piezas compartidas:
+
+| Archivo | Función |
+|---|---|
+| `snippets/safari-section-style.liquid` | Espaciado y visibilidad por dispositivo de cada sección |
+| `snippets/safari-product-grid.liquid` | Grilla de productos con carrusel en móvil (usa el `slider-component` de Dawn) |
+| `snippets/safari-product-card.liquid` | Tarjeta: envuelve `card-product` de Dawn y suma descuento, etiquetas y disponibilidad |
+| `assets/safari-slider.js` | Elemento `<safari-slider>`: carrusel por scroll-snap para el slider y los anuncios |
+| `assets/component-safari-product-grid.css` | Estilos de la capa de la tarjeta |
 
 Las secciones de encabezado declaran `"enabled_on": { "groups": ["header"] }` y se agregan al grupo
-`sections/header-group.json` desde el editor. Las secciones de Dawn (`header`, `announcement-bar`) se
-quitan del grupo desde el editor, no se borran del repositorio.
+de encabezado desde el editor. Las secciones de Dawn (`header`, `announcement-bar`) se quitan del grupo
+desde el editor, no se borran del repositorio.
 
 ## 4. Contrato de una sección Safari
 
@@ -69,7 +78,7 @@ Toda sección `safari-*` debe cumplir:
 
 ### Esqueleto de referencia
 
-Punto de partida para la OT-002. No está en `sections/` para no generar una sección vacía.
+Plantilla mínima para secciones nuevas. No está en `sections/` para no generar una sección vacía.
 
 ```liquid
 {{ 'section-safari-ejemplo.css' | asset_url | stylesheet_tag }}

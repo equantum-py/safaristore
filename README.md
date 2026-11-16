@@ -33,6 +33,7 @@ Son las únicas. Cualquier otro archivo es idéntico al original.
 | `config/settings_schema.json` | Bloque `theme_info`: nombre "Safari Store", versión `0.1.0`, autor y URLs del proyecto |
 | `snippets/safari-head.liquid` | Nuevo. Carga la capa de estilos Safari |
 | `assets/safari-theme.css` | Nuevo. Tokens de diseño enlazados a los valores de Dawn (sin cambio visual) |
+| `sections/safari-*.liquid`, `snippets/safari-*.liquid`, `assets/*safari*` | Nuevos. Secciones y piezas propias (OT-002). No modifican archivos de Dawn |
 | `.gitignore`, `README.md`, `docs/` | Propios del proyecto |
 
 ## 2. Estructura del repositorio
@@ -159,4 +160,6 @@ copia de respaldo independiente de GitHub.
 ## 7. Estado
 
 - OT-001: preparación del repositorio. Ver [`docs/VALIDACIONES-OT-001.md`](docs/VALIDACIONES-OT-001.md).
-- OT-002 (pendiente): transformación visual y secciones `safari-*`.
+- OT-002, base funcional: nueve secciones `safari-*` desarrolladas, sin integrar a las plantillas. Ver
+  [`docs/SECCIONES-SAFARI.md`](docs/SECCIONES-SAFARI.md) y [`docs/VALIDACIONES-OT-002.md`](docs/VALIDACIONES-OT-002.md).
+- OT-002, Fase B (pendiente): identidad visual, a la espera de la imagen de referencia.

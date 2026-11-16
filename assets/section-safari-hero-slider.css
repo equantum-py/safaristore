@@ -1,0 +1,276 @@
+/* Safari Store — Slider principal. Estilos provisionales (OT-002, base funcional). */
+.safari-hero__slider {
+  display: block;
+  position: relative;
+}
+
+.safari-hero__track {
+  position: relative;
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.safari-hero__track::-webkit-scrollbar {
+  display: none;
+}
+
+.safari-hero__track:focus-visible {
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
+  outline-offset: -0.2rem;
+}
+
+.safari-hero__slide {
+  position: relative;
+  display: flex;
+  flex: 0 0 100%;
+  flex-direction: column;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Imagen ------------------------------------------------------------------ */
+.safari-hero__media {
+  position: relative;
+  width: 100%;
+  max-height: 70vh;
+  max-height: 70svh;
+  overflow: hidden;
+  aspect-ratio: var(--safari-hero-ratio-mobile);
+}
+
+.safari-hero__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: var(--safari-hero-overlay, 0);
+  pointer-events: none;
+}
+
+.safari-hero__media picture,
+.safari-hero__media-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.safari-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.safari-hero__track--mobile-small .safari-hero__media {
+  height: 24rem;
+  aspect-ratio: auto;
+}
+
+.safari-hero__track--mobile-medium .safari-hero__media {
+  height: 32rem;
+  aspect-ratio: auto;
+}
+
+.safari-hero__track--mobile-large .safari-hero__media {
+  height: 42rem;
+  aspect-ratio: auto;
+}
+
+/* Contenido --------------------------------------------------------------- */
+.safari-hero__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  pointer-events: none;
+}
+
+.safari-hero__slide--no-image .safari-hero__content {
+  position: static;
+}
+
+.safari-hero__box {
+  max-width: 54rem;
+  pointer-events: auto;
+}
+
+.safari-hero__box--solid {
+  padding: 2rem;
+}
+
+.safari-hero__box > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.safari-hero__box > * + * {
+  margin-top: 1.2rem;
+}
+
+.safari-hero__text p {
+  margin: 0;
+}
+
+.safari-hero__content--top-left,
+.safari-hero__content--top-center,
+.safari-hero__content--top-right {
+  align-items: flex-start;
+}
+
+.safari-hero__content--middle-left,
+.safari-hero__content--middle-center,
+.safari-hero__content--middle-right {
+  align-items: center;
+}
+
+.safari-hero__content--bottom-left,
+.safari-hero__content--bottom-center,
+.safari-hero__content--bottom-right {
+  align-items: flex-end;
+}
+
+.safari-hero__content--top-left,
+.safari-hero__content--middle-left,
+.safari-hero__content--bottom-left {
+  justify-content: flex-start;
+}
+
+.safari-hero__content--top-center,
+.safari-hero__content--middle-center,
+.safari-hero__content--bottom-center {
+  justify-content: center;
+}
+
+.safari-hero__content--top-right,
+.safari-hero__content--middle-right,
+.safari-hero__content--bottom-right {
+  justify-content: flex-end;
+}
+
+.safari-hero__content--align-left {
+  text-align: left;
+}
+
+.safari-hero__content--align-center {
+  text-align: center;
+}
+
+.safari-hero__content--align-right {
+  text-align: right;
+}
+
+@media screen and (max-width: 749px) {
+  .safari-hero__track--mobile-below .safari-hero__content {
+    position: static;
+    padding-top: 1.6rem;
+    padding-bottom: 1.6rem;
+  }
+
+  .safari-hero__track--mobile-below .safari-hero__box {
+    width: 100%;
+    max-width: none;
+  }
+
+  .safari-hero__track--mobile-below .safari-hero__box--solid {
+    padding: 0;
+    background: none;
+  }
+
+  .safari-hero__track--mobile-below .safari-hero__media::after {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .safari-hero__media {
+    max-height: none;
+    aspect-ratio: var(--safari-hero-ratio-desktop);
+  }
+
+  .safari-hero__track--mobile-small .safari-hero__media,
+  .safari-hero__track--mobile-medium .safari-hero__media,
+  .safari-hero__track--mobile-large .safari-hero__media {
+    height: auto;
+    aspect-ratio: var(--safari-hero-ratio-desktop);
+  }
+
+  .safari-hero__track.safari-hero__track--desktop-small .safari-hero__media {
+    height: 36rem;
+    aspect-ratio: auto;
+  }
+
+  .safari-hero__track.safari-hero__track--desktop-medium .safari-hero__media {
+    height: 48rem;
+    aspect-ratio: auto;
+  }
+
+  .safari-hero__track.safari-hero__track--desktop-large .safari-hero__media {
+    height: 60rem;
+    aspect-ratio: auto;
+  }
+
+  .safari-hero__content {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .safari-hero__box--solid {
+    padding: 3.2rem;
+  }
+}
+
+/* Controles --------------------------------------------------------------- */
+.safari-hero__controls {
+  gap: 0.4rem;
+}
+
+.safari-hero__dots {
+  display: flex;
+  align-items: center;
+}
+
+.safari-hero__dot {
+  position: relative;
+  width: 2.4rem;
+  height: 4.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.safari-hero__dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin: -0.5rem 0 0 -0.5rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.75);
+  border-radius: 50%;
+}
+
+.safari-hero__dot.is-active::before {
+  background: rgb(var(--color-foreground));
+}
+
+.safari-hero__toggle .svg-wrapper {
+  width: 1rem;
+  height: 1rem;
+}
+
+.safari-hero__toggle-play,
+safari-slider.is-paused .safari-hero__toggle-pause {
+  display: none;
+}
+
+safari-slider.is-paused .safari-hero__toggle-play {
+  display: flex;
+}

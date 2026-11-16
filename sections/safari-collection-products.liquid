@@ -1,0 +1,406 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-safari-product-grid.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.quick_add == 'standard' -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- render 'safari-section-style',
+  section_id: section.id,
+  padding_top: section.settings.padding_top,
+  padding_bottom: section.settings.padding_bottom,
+  show_on_desktop: section.settings.show_on_desktop,
+  show_on_mobile: section.settings.show_on_mobile
+-%}
+
+{%- liquid
+  assign collection = section.settings.collection
+  assign products = collection.products
+  assign product_view_context = 'collection'
+
+  assign section_title = section.settings.title
+  if section_title == blank and section.settings.use_collection_title
+    assign section_title = collection.title | escape
+  endif
+
+  assign more_in_collection = false
+  if collection.all_products_count > section.settings.products_to_show
+    assign more_in_collection = true
+  endif
+-%}
+
+{%- if products.size > 0 or request.design_mode -%}
+  <div class="safari-products color-{{ section.settings.color_scheme }} isolate gradient">
+    <div class="collection section-{{ section.id }}-padding" id="collection-{{ section.id }}" data-id="{{ section.id }}">
+      {%- if section_title != blank or section.settings.show_description and collection.description != blank -%}
+        <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width{% if section.settings.swipe_on_mobile %} title-wrapper--self-padded-tablet-down{% endif %}">
+          {%- if section_title != blank -%}
+            <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section_title }}</h2>
+          {%- endif -%}
+          {%- if section.settings.show_description and collection.description != blank -%}
+            <div class="collection__description rte">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if collection == blank and request.design_mode -%}
+        <p class="safari-products__notice page-width caption">{{ section.settings.empty_message | escape }}</p>
+      {%- elsif products.size == 0 and request.design_mode -%}
+        <p class="safari-products__notice page-width caption">{{ section.settings.empty_collection_message | escape }}</p>
+      {%- endif -%}
+
+  {%- render 'safari-product-grid',
+    products: products,
+    limit: section.settings.products_to_show,
+    section_id: section.id,
+    columns_desktop: section.settings.columns_desktop,
+    columns_mobile: section.settings.columns_mobile,
+    swipe_on_mobile: section.settings.swipe_on_mobile,
+    image_ratio: section.settings.image_ratio,
+    show_secondary_image: section.settings.show_secondary_image,
+    show_vendor: section.settings.show_vendor,
+    show_rating: section.settings.show_rating,
+    quick_add: section.settings.quick_add,
+    labels: section.blocks,
+    show_discount: section.settings.show_discount,
+    show_availability: section.settings.show_availability,
+    text_in_stock: section.settings.text_in_stock,
+    text_out_of_stock: section.settings.text_out_of_stock,
+    low_stock_threshold: section.settings.low_stock_threshold,
+    text_low_stock: section.settings.text_low_stock,
+    product_view_context: product_view_context
+  -%}
+
+      {%- if section.settings.show_view_all and more_in_collection -%}
+        <div class="center collection__view-all">
+          <a
+            href="{{ collection.url }}"
+            class="button button--secondary"
+            aria-label="{{ 'sections.featured_collection.view_all_label' | t: collection_name: collection.title | escape }}"
+          >
+            {{- 'sections.featured_collection.view_all' | t -}}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Safari · Colección",
+  "tag": "section",
+  "class": "section safari-products-section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Colección",
+      "info": "Sin colección, o con una colección vacía, la sección no se publica en la tienda."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "label": "Máximo de productos",
+      "default": 8
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Título"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_collection_title",
+      "label": "Usar el nombre de la colección si el título está vacío",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Tamaño del título",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Pequeño"
+        },
+        {
+          "value": "h1",
+          "label": "Mediano"
+        },
+        {
+          "value": "h0",
+          "label": "Grande"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Mostrar la descripción de la colección",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Mostrar botón \"Ver todo\" si hay más productos",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "empty_message",
+      "label": "Aviso en el editor sin colección",
+      "default": "Elegí una colección para mostrar sus productos.",
+      "info": "Solo se ve en el editor."
+    },
+    {
+      "type": "text",
+      "id": "empty_collection_message",
+      "label": "Aviso en el editor con colección vacía",
+      "default": "Esta colección todavía no tiene productos.",
+      "info": "Solo se ve en el editor."
+    },
+    {
+      "type": "header",
+      "content": "Tarjeta de producto"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporción de la imagen",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adaptar a la imagen"
+        },
+        {
+          "value": "portrait",
+          "label": "Vertical"
+        },
+        {
+          "value": "square",
+          "label": "Cuadrada"
+        }
+      ],
+      "default": "square"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Mostrar segunda imagen al pasar el cursor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Mostrar marca",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Mostrar valoración",
+      "default": false,
+      "info": "Requiere una app de reseñas que complete la valoración del producto."
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "label": "Agregar al carrito desde la tarjeta",
+      "options": [
+        {
+          "value": "none",
+          "label": "No"
+        },
+        {
+          "value": "standard",
+          "label": "Sí"
+        }
+      ],
+      "default": "standard",
+      "info": "Con una sola variante agrega directo al carrito. Con varias abre el selector de variantes."
+    },
+    {
+      "type": "header",
+      "content": "Descuento y disponibilidad"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "label": "Mostrar porcentaje de descuento",
+      "default": true,
+      "info": "Se calcula con el precio y el precio de comparación del producto."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_availability",
+      "label": "Mostrar disponibilidad",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text_in_stock",
+      "label": "Texto con stock",
+      "default": "Disponible"
+    },
+    {
+      "type": "text",
+      "id": "text_out_of_stock",
+      "label": "Texto sin stock",
+      "default": "Agotado"
+    },
+    {
+      "type": "range",
+      "id": "low_stock_threshold",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "label": "Avisar pocas unidades desde",
+      "default": 0,
+      "info": "En 0 se desactiva. Solo aplica si Shopify controla el inventario de la variante."
+    },
+    {
+      "type": "text",
+      "id": "text_low_stock",
+      "label": "Texto de pocas unidades",
+      "default": "Últimas unidades"
+    },
+    {
+      "type": "header",
+      "content": "Distribución"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Columnas en escritorio",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columnas en móvil",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "label": "Carrusel en móvil",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Apariencia"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Esquema de color",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "label": "Espacio superior",
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "label": "Espacio inferior",
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Visibilidad"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Mostrar en escritorio y tablet",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Mostrar en móvil",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "label",
+      "name": "Etiqueta comercial",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "La etiqueta aparece en los productos que tengan la etiqueta (tag) indicada en Shopify."
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Etiqueta (tag) del producto",
+          "info": "Tal como figura en el producto. No distingue mayúsculas."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto a mostrar",
+          "default": "Nuevo"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "Esquema de color",
+          "default": "scheme-5"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Safari · Colección"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,573 @@
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'section-safari-hero-slider.css' | asset_url | stylesheet_tag }}
+{%- if section.blocks.size > 1 -%}
+  <script src="{{ 'safari-slider.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- render 'safari-section-style',
+  section_id: section.id,
+  padding_top: section.settings.padding_top,
+  padding_bottom: section.settings.padding_bottom,
+  show_on_desktop: section.settings.show_on_desktop,
+  show_on_mobile: section.settings.show_on_mobile
+-%}
+
+{%- liquid
+  assign multiple = false
+  if section.blocks.size > 1
+    assign multiple = true
+  endif
+  assign mobile_widths = '375,550,750,1100,1500'
+  assign mobile_width_list = mobile_widths | split: ','
+-%}
+
+{%- if section.blocks.size > 0 -%}
+  <div class="safari-hero color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+    <safari-slider
+      class="safari-hero__slider{% unless section.settings.full_width %} page-width{% endunless %}"
+      role="region"
+      aria-roledescription="{{ 'sections.slideshow.carousel' | t }}"
+      aria-label="{{ section.settings.accessibility_info | escape }}"
+      data-autoplay="{{ section.settings.auto_rotate }}"
+      data-speed="{{ section.settings.change_slides_speed }}"
+    >
+      <div
+        class="safari-hero__track safari-hero__track--desktop-{{ section.settings.height_desktop }} safari-hero__track--mobile-{{ section.settings.height_mobile }}{% if section.settings.mobile_content_below %} safari-hero__track--mobile-below{% endif %}"
+        id="SafariHero-{{ section.id }}"
+        data-slider-track
+        {% if multiple %}
+          tabindex="0"
+        {% endif %}
+      >
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign image = block.settings.image
+            assign image_mobile = block.settings.image_mobile | default: block.settings.image
+            assign ratio_desktop = image.aspect_ratio | default: 2.4
+            assign ratio_mobile = image_mobile.aspect_ratio | default: 1.25
+
+            assign has_content = false
+            if block.settings.subheading != blank or block.settings.heading != blank or block.settings.text != blank or block.settings.button_label != blank
+              assign has_content = true
+            endif
+
+            assign eager = false
+            if forloop.first and section.index == 1
+              assign eager = true
+            endif
+          -%}
+          <div
+            class="safari-hero__slide{% if image == blank %} safari-hero__slide--no-image{% endif %}"
+            id="SafariHero-{{ section.id }}-{{ forloop.index }}"
+            data-slider-slide
+            {% if multiple %}
+              role="group"
+              aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+              aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+            {% endif %}
+            style="--safari-hero-ratio-desktop: {{ ratio_desktop }}; --safari-hero-ratio-mobile: {{ ratio_mobile }}; --safari-hero-overlay: {{ block.settings.overlay_opacity | divided_by: 100.0 }};"
+            {{ block.shopify_attributes }}
+          >
+            {%- if image != blank or request.design_mode -%}
+              <div class="safari-hero__media{% if image == blank %} placeholder{% endif %}">
+                {%- if image != blank -%}
+                  {%- capture picture -%}
+                    <picture>
+                      {%- if block.settings.image_mobile != blank -%}
+                        <source
+                          media="(max-width: 749px)"
+                          srcset="
+                            {%- for w in mobile_width_list -%}
+                              {%- assign w_int = w | plus: 0 -%}
+                              {%- if image_mobile.width >= w_int -%}
+                                {{ image_mobile | image_url: width: w_int }} {{ w_int }}w,
+                              {%- endif -%}
+                            {%- endfor -%}
+                            {{ image_mobile | image_url }} {{ image_mobile.width }}w"
+                          sizes="100vw"
+                          width="{{ image_mobile.width }}"
+                          height="{{ image_mobile.height }}"
+                        >
+                      {%- endif -%}
+                      {%- if eager -%}
+                        {{
+                          image
+                          | image_url: width: 3840
+                          | image_tag:
+                            class: 'safari-hero__image',
+                            widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                            sizes: '100vw',
+                            loading: 'eager',
+                            fetchpriority: 'high',
+                            alt: image.alt
+                        }}
+                      {%- else -%}
+                        {{
+                          image
+                          | image_url: width: 3840
+                          | image_tag:
+                            class: 'safari-hero__image',
+                            widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                            sizes: '100vw',
+                            loading: 'lazy',
+                            alt: image.alt
+                        }}
+                      {%- endif -%}
+                    </picture>
+                  {%- endcapture -%}
+                  {%- if block.settings.link != blank and block.settings.button_label == blank -%}
+                    <a href="{{ block.settings.link }}" class="safari-hero__media-link focus-inset">
+                      {{ picture }}
+                      {%- if image.alt == blank -%}
+                        <span class="visually-hidden">{{ block.settings.heading | strip_html | default: shop.name | escape }}</span>
+                      {%- endif -%}
+                    </a>
+                  {%- else -%}
+                    {{ picture }}
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg safari-hero__image' }}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- if has_content -%}
+              <div class="safari-hero__content safari-hero__content--{{ section.settings.content_position }} safari-hero__content--align-{{ section.settings.content_alignment }} page-width">
+                <div class="safari-hero__box{% if section.settings.show_text_box %} safari-hero__box--solid color-{{ block.settings.box_color_scheme }} gradient{% endif %}">
+                  {%- if block.settings.subheading != blank -%}
+                    <p class="safari-hero__subheading caption-with-letter-spacing">{{ block.settings.subheading | escape }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.heading != blank -%}
+                    <h2 class="safari-hero__heading inline-richtext {{ section.settings.heading_size }}">
+                      {{ block.settings.heading }}
+                    </h2>
+                  {%- endif -%}
+                  {%- if block.settings.text != blank -%}
+                    <div class="safari-hero__text rte">{{ block.settings.text }}</div>
+                  {%- endif -%}
+                  {%- if block.settings.button_label != blank -%}
+                    <a
+                      {% if block.settings.link == blank %}
+                        role="link" aria-disabled="true"
+                      {% else %}
+                        href="{{ block.settings.link }}"
+                      {% endif %}
+                      class="safari-hero__button button{% if block.settings.button_style_secondary %} button--secondary{% else %} button--primary{% endif %}"
+                    >
+                      {{- block.settings.button_label | escape -}}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if multiple -%}
+        {%- if section.settings.show_arrows or section.settings.show_dots or section.settings.auto_rotate -%}
+          <div class="safari-hero__controls slider-buttons">
+            {%- if section.settings.show_arrows -%}
+              <button
+                type="button"
+                class="slider-button slider-button--prev"
+                data-slider-prev
+                aria-label="{{ 'general.slider.previous_slide' | t }}"
+                aria-controls="SafariHero-{{ section.id }}"
+              >
+                <span class="svg-wrapper">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+              </button>
+            {%- endif -%}
+            {%- if section.settings.show_dots -%}
+              <div class="safari-hero__dots">
+                {%- for block in section.blocks -%}
+                  <button
+                    type="button"
+                    class="safari-hero__dot"
+                    data-slider-dot
+                    aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+                    aria-controls="SafariHero-{{ section.id }}"
+                  ></button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+            {%- if section.settings.show_arrows -%}
+              <button
+                type="button"
+                class="slider-button slider-button--next"
+                data-slider-next
+                aria-label="{{ 'general.slider.next_slide' | t }}"
+                aria-controls="SafariHero-{{ section.id }}"
+              >
+                <span class="svg-wrapper">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+              </button>
+            {%- endif -%}
+            {%- if section.settings.auto_rotate -%}
+              <button
+                type="button"
+                class="safari-hero__toggle slider-button"
+                data-slider-toggle
+                data-label-pause="{{ 'sections.slideshow.pause_slideshow' | t }}"
+                data-label-play="{{ 'sections.slideshow.play_slideshow' | t }}"
+                aria-label="{{ 'sections.slideshow.pause_slideshow' | t }}"
+              >
+                <span class="svg-wrapper safari-hero__toggle-pause">{{ 'icon-pause.svg' | inline_asset_content }}</span>
+                <span class="svg-wrapper safari-hero__toggle-play">{{ 'icon-play.svg' | inline_asset_content }}</span>
+              </button>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </safari-slider>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Safari · Slider",
+  "tag": "section",
+  "class": "section safari-hero-section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Ancho completo",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Altura"
+    },
+    {
+      "type": "select",
+      "id": "height_desktop",
+      "label": "Altura en escritorio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adaptar a la imagen (sin recorte)"
+        },
+        {
+          "value": "small",
+          "label": "Baja"
+        },
+        {
+          "value": "medium",
+          "label": "Media"
+        },
+        {
+          "value": "large",
+          "label": "Alta"
+        }
+      ],
+      "default": "adapt",
+      "info": "Con \"Adaptar\", usar imágenes de la misma proporción en todas las diapositivas."
+    },
+    {
+      "type": "select",
+      "id": "height_mobile",
+      "label": "Altura en móvil",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adaptar a la imagen (sin recorte)"
+        },
+        {
+          "value": "small",
+          "label": "Baja"
+        },
+        {
+          "value": "medium",
+          "label": "Media"
+        },
+        {
+          "value": "large",
+          "label": "Alta"
+        }
+      ],
+      "default": "adapt",
+      "info": "En móvil la imagen nunca supera el 70 % del alto de la pantalla."
+    },
+    {
+      "type": "header",
+      "content": "Contenido"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Posición del contenido",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Arriba a la izquierda"
+        },
+        {
+          "value": "top-center",
+          "label": "Arriba al centro"
+        },
+        {
+          "value": "top-right",
+          "label": "Arriba a la derecha"
+        },
+        {
+          "value": "middle-left",
+          "label": "Centro a la izquierda"
+        },
+        {
+          "value": "middle-center",
+          "label": "Centro"
+        },
+        {
+          "value": "middle-right",
+          "label": "Centro a la derecha"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Abajo a la izquierda"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Abajo al centro"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Abajo a la derecha"
+        }
+      ],
+      "default": "middle-left"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Alineación del texto",
+      "options": [
+        {
+          "value": "left",
+          "label": "Izquierda"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Derecha"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Tamaño del título",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Pequeño"
+        },
+        {
+          "value": "h1",
+          "label": "Mediano"
+        },
+        {
+          "value": "h0",
+          "label": "Grande"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text_box",
+      "label": "Mostrar el texto dentro de un recuadro",
+      "default": true,
+      "info": "Asegura la lectura sobre cualquier imagen."
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_content_below",
+      "label": "En móvil, mostrar el texto debajo de la imagen",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Reproducción y navegación"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Reproducción automática",
+      "default": false,
+      "info": "Se pausa al pasar el cursor, al recibir foco y si el visitante prefiere menos movimiento."
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "label": "Cambiar diapositiva cada",
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Mostrar flechas",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Mostrar puntos",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "accessibility_info",
+      "label": "Descripción del slider",
+      "default": "Promociones destacadas",
+      "info": "La leen los lectores de pantalla."
+    },
+    {
+      "type": "header",
+      "content": "Apariencia"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Esquema de color",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "label": "Espacio superior",
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "label": "Espacio inferior",
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Visibilidad"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Mostrar en escritorio y tablet",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Mostrar en móvil",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Diapositiva",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagen de escritorio"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Imagen de móvil",
+          "info": "Opcional. Si queda vacía se usa la de escritorio."
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 80,
+          "step": 10,
+          "label": "Oscurecer imagen",
+          "default": 0,
+          "unit": "%",
+          "info": "Solo aplica cuando el texto va sobre la imagen sin recuadro."
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subtítulo"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Título",
+          "default": "Título de la diapositiva"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Descripción"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Texto del botón",
+          "info": "Sin texto de botón, toda la imagen funciona como enlace."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_style_secondary",
+          "label": "Usar estilo de botón secundario",
+          "default": false
+        },
+        {
+          "type": "color_scheme",
+          "id": "box_color_scheme",
+          "label": "Esquema de color del recuadro",
+          "default": "scheme-1"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Safari · Slider",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
