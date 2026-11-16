@@ -1,0 +1,16 @@
+{% comment %}
+  Safari Store — punto único de carga de la capa de personalización.
+
+  Se renderiza desde layout/theme.liquid inmediatamente después de base.css,
+  de modo que los estilos Safari tengan prioridad sobre los de Dawn sin
+  modificar los archivos originales del tema.
+
+  Los estilos propios de cada sección safari-* NO se cargan aquí: cada
+  sección carga su propio asset (assets/section-safari-*.css) para seguir
+  siendo independiente.
+
+  Uso:
+  {% render 'safari-head' %}
+{% endcomment %}
+
+{{ 'safari-theme.css' | asset_url | stylesheet_tag }}

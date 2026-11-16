@@ -1,0 +1,79 @@
+/* ==========================================================================
+   SAFARI STORE — Capa global de personalización sobre Dawn
+   --------------------------------------------------------------------------
+   Este archivo se carga después de base.css (ver snippets/safari-head.liquid).
+   Regla de oro: NO editar base.css ni los component-*.css de Dawn.
+   Toda transformación visual global se escribe aquí, por bloques.
+
+   Estado OT-001: solo se declaran los tokens, enlazados a los valores que
+   Dawn ya calcula desde el editor de Shopify. El resultado visual es
+   idéntico a Dawn. La identidad definitiva se define en la OT-002.
+
+   Índice
+     1. Tokens (colores, tipografía, espaciado, bordes, sombras)
+     2. Tipografía
+     3. Botones
+     4. Tarjetas de producto
+     5. Encabezado y navegación
+     6. Banners
+     7. Mobile (< 750px)
+   ========================================================================== */
+
+/* 1. TOKENS ---------------------------------------------------------------
+   Los colores de Dawn son tripletas RGB ("r, g, b") definidas por esquema de
+   color en el editor. Se consumen con rgb(var(--token)) o
+   rgba(var(--token), alpha). Mientras un token apunte a la variable de Dawn,
+   el comerciante sigue controlándolo desde Shopify; reemplazar el valor aquí
+   lo fija por código.
+   ------------------------------------------------------------------------ */
+:root,
+[class*='color-'] {
+  /* Colores */
+  --safari-color-bg: var(--color-background);
+  --safari-color-text: var(--color-foreground);
+  --safari-color-primary: var(--color-button);
+  --safari-color-on-primary: var(--color-button-text);
+  --safari-color-link: var(--color-link);
+  --safari-color-badge-bg: var(--color-badge-background);
+  --safari-color-badge-text: var(--color-badge-foreground);
+}
+
+:root {
+  /* Tipografía */
+  --safari-font-body: var(--font-body-family);
+  --safari-font-heading: var(--font-heading-family);
+
+  /* Espaciado (escala propia, base 4px; 1rem = 10px en Dawn) */
+  --safari-space-1: 0.4rem;
+  --safari-space-2: 0.8rem;
+  --safari-space-3: 1.2rem;
+  --safari-space-4: 1.6rem;
+  --safari-space-6: 2.4rem;
+  --safari-space-8: 3.2rem;
+  --safari-space-12: 4.8rem;
+
+  /* Bordes */
+  --safari-radius-button: var(--buttons-radius);
+  --safari-radius-card: var(--product-card-corner-radius);
+  --safari-radius-input: var(--inputs-radius);
+  --safari-radius-media: var(--media-radius);
+
+  /* Sombras */
+  --safari-shadow-card: var(--product-card-shadow-horizontal-offset) var(--product-card-shadow-vertical-offset)
+    var(--product-card-shadow-blur-radius) rgba(var(--color-shadow), var(--product-card-shadow-opacity));
+
+  /* Layout */
+  --safari-page-width: var(--page-width);
+}
+
+/* 2. TIPOGRAFÍA ----------------------------------------------------------- */
+
+/* 3. BOTONES -------------------------------------------------------------- */
+
+/* 4. TARJETAS DE PRODUCTO ------------------------------------------------- */
+
+/* 5. ENCABEZADO Y NAVEGACIÓN ---------------------------------------------- */
+
+/* 6. BANNERS -------------------------------------------------------------- */
+
+/* 7. MOBILE (< 750px) ----------------------------------------------------- */

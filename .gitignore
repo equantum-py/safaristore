@@ -1,0 +1,34 @@
+# Sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Shopify CLI (estado local y sesiones)
+.shopify/
+.shopifyignore.local
+config.yml
+
+# Credenciales y variables de entorno: nunca se versionan
+.env
+.env.*
+*.pem
+*.key
+*.p12
+
+# Dependencias y artefactos
+node_modules/
+*.zip
+*.log
+npm-debug.log*
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
