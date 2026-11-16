@@ -65,19 +65,25 @@ shopify-account.header__icon:not(:defined) {
 }
 
 /* Diseño propio del encabezado Safari ------------------------------------- */
+/* Móvil: tres columnas simétricas (1fr auto 1fr) para que el logo quede centrado
+   en el ancho de la página sin importar cuántos íconos haya a cada lado. */
 .safari-header__inner {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-areas:
-    'drawer brand icons'
+    'start brand icons'
     'search search search';
   align-items: center;
   column-gap: 0.8rem;
   row-gap: 0.8rem;
 }
 
-.safari-header__drawer {
-  grid-area: drawer;
+.safari-header__start {
+  grid-area: start;
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  min-width: 0;
 }
 
 .safari-header__drawer header-drawer {
@@ -87,7 +93,9 @@ shopify-account.header__icon:not(:defined) {
 
 .safari-header__brand {
   grid-area: brand;
+  justify-self: center;
   min-width: 0;
+  max-width: 100%;
 }
 
 .safari-header__brand .header__heading {
@@ -98,7 +106,6 @@ shopify-account.header__icon:not(:defined) {
 .safari-header__brand .header__heading-link {
   display: inline-block;
   padding: 0.75rem;
-  margin-left: -0.75rem;
   text-decoration: none;
   word-break: break-word;
 }
@@ -109,8 +116,13 @@ shopify-account.header__icon:not(:defined) {
   height: auto;
 }
 
+/* En móvil, los contenedores de búsqueda y acciones se reparten como ítems
+   directos de la cuadrícula del encabezado. */
+.safari-header__actions {
+  display: contents;
+}
+
 .safari-header__menu {
-  grid-area: menu;
   display: none;
 }
 
@@ -136,15 +148,68 @@ shopify-account.header__icon:not(:defined) {
   margin-right: -1.2rem;
 }
 
+/* Muy estrecho: la cuenta se oculta para que el logo conserve su espacio centrado. */
+@media screen and (max-width: 359px) {
+  .safari-header__icons shopify-account {
+    display: none;
+  }
+}
+
+/* Escritorio: una sola línea, menú a la izquierda, búsqueda e íconos a la derecha.
+   La posición del logo se controla con la clase --logo-{left|center|right}. */
 @media screen and (min-width: 990px) {
-  .safari-header__inner {
-    grid-template-columns: auto auto minmax(20rem, 1fr) auto;
-    grid-template-areas: 'brand menu search icons';
+  .safari-header__inner,
+  .safari-header__inner--logo-center {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-areas: 'start brand actions';
     column-gap: 2.4rem;
+    row-gap: 0;
+  }
+
+  .safari-header__inner--logo-left {
+    grid-template-columns: auto auto minmax(0, 1fr);
+  }
+
+  .safari-header__inner--logo-right {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'start actions brand';
+  }
+
+  .safari-header__inner--logo-left .safari-header__start,
+  .safari-header__inner--logo-center .safari-header__start,
+  .safari-header__inner--logo-right .safari-header__start {
+    grid-area: start;
+  }
+
+  .safari-header__inner--logo-left .safari-header__brand,
+  .safari-header__inner--logo-center .safari-header__brand {
+    grid-area: brand;
+    justify-self: center;
+  }
+
+  .safari-header__inner--logo-left .safari-header__brand {
+    justify-self: start;
+  }
+
+  .safari-header__inner--logo-right .safari-header__brand {
+    justify-self: end;
+  }
+
+  .safari-header__inner--logo-left .safari-header__actions,
+  .safari-header__inner--logo-center .safari-header__actions,
+  .safari-header__inner--logo-right .safari-header__actions {
+    grid-area: actions;
+  }
+
+  .safari-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 2.4rem;
+    min-width: 0;
   }
 
   .safari-header__drawer {
-    display: none;
+    display: block;
   }
 
   .safari-header__menu {
@@ -152,9 +217,12 @@ shopify-account.header__icon:not(:defined) {
   }
 
   .safari-header__search {
-    justify-self: center;
-    width: 100%;
+    flex: 1 1 auto;
     max-width: 64rem;
+  }
+
+  .safari-header__icons {
+    flex: none;
   }
 }
 

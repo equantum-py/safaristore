@@ -52,16 +52,23 @@
   {% endif %}
   class="header-wrapper safari-header color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
 >
-  <header class="safari-header__inner page-width{% if section.settings.show_search %} safari-header__inner--has-search{% endif %}{% if section.settings.menu != blank %} safari-header__inner--has-menu{% endif %}">
-    {%- if section.settings.menu != blank -%}
-      <div class="safari-header__drawer">
-        {%- render 'header-drawer',
-          show_country_selector: false,
-          show_language_selector: false,
-          show_social_links: section.settings.show_social_in_drawer
-        -%}
-      </div>
-    {%- endif -%}
+  <header class="safari-header__inner page-width safari-header__inner--logo-{{ section.settings.logo_position }}{% if section.settings.show_search %} safari-header__inner--has-search{% endif %}{% if section.settings.menu != blank %} safari-header__inner--has-menu{% endif %}">
+    <div class="safari-header__start">
+      {%- if section.settings.menu != blank -%}
+        <div class="safari-header__drawer">
+          {%- render 'header-drawer',
+            show_country_selector: false,
+            show_language_selector: false,
+            show_social_links: section.settings.show_social_in_drawer
+          -%}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.show_inline_menu and section.settings.menu != blank -%}
+        <div class="safari-header__menu">
+          {%- render 'header-dropdown-menu' -%}
+        </div>
+      {%- endif -%}
+    </div>
 
     <div class="safari-header__brand">
       {%- if request.page_type == 'index' -%}
@@ -89,7 +96,7 @@
               preload: true
           }}
         {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
+          {%- if section.settings.show_name_without_logo -%}<span class="h2">{{ shop.name }}</span>{%- endif -%}
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}
@@ -97,12 +104,7 @@
       {%- endif -%}
     </div>
 
-    {%- if section.settings.show_inline_menu and section.settings.menu != blank -%}
-      <div class="safari-header__menu">
-        {%- render 'header-dropdown-menu' -%}
-      </div>
-    {%- endif -%}
-
+    <div class="safari-header__actions">
     {%- if section.settings.show_search -%}
       <div class="safari-header__search">
         {%- if settings.predictive_search_enabled -%}
@@ -196,6 +198,7 @@
         {%- endif -%}
       </a>
     </div>
+    </div>
   </header>
 </{{ header_tag }}>
 
@@ -247,6 +250,24 @@
       "label": "Ancho del logo en móvil",
       "default": 100,
       "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "logo_position",
+      "label": "Posición del logo en escritorio",
+      "info": "En móvil el logo siempre queda centrado.",
+      "options": [
+        {"value": "left", "label": "Izquierda"},
+        {"value": "center", "label": "Centro"},
+        {"value": "right", "label": "Derecha"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_name_without_logo",
+      "label": "Mostrar nombre de la tienda si no hay logo",
+      "default": true
     },
     {
       "type": "header",
